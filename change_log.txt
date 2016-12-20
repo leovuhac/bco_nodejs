@@ -1,0 +1,54 @@
+#2016-10-22
+- Lỗi fishData undefined của hàm fishTurn.generateFishSpecial()
+- Try catch exception tại room.gameHandler.gameRequest
+- Sửa lỗi Unexpected Token tại sioconnector.decode()
+- Thêm return; ở các đoạn không tìm thấy Player
+- Tắt ghi log của Debug
+- Sửa gameController thêm 1 reason leave_room nữa
+- Sửa quickplayGameController và freeplayGameController thêm đoạn kick user ở table_info trong trường hợp bàn đầy
+- Sửa trong playerFilter có hàm kickUserFromAllRoom
+- Sửa đoạn chọn phòng freeplay trong lobbyHandler.freeplay() : để numberPlayer < maxPlayer - 1
+- Sửa đoạn kiểm tra không đủ tiền bị kick khỏi bàn là tiền < 2
+
+#2016-10-24
+- Lúc standup trong room nếu ko có trong danh sách players thì cho leaveRoom luôn
+- Lúc leaveroom nếu ko có trong danh sách players thì vẫn cho leave_room
+
+#2016-10-25
+- Thêm hàm log error trong /database/mysql/mysql . query
+- Thêm Debug.game log lại các bước request của user
+- Thêm user.setSession(session) trong playerFilter
+- Trong playerFilter nếu session không có roomName thì lấy từ user.getProperty(UserFlag.ROOM_ID)
+- Trong app.js bật app.filter(pomelo.filters.serial());
+
+#2016-10-27
+- Fish sửa ko lưu trữ orbit của cá nữa mà chỉ lưu orbitLength thôi
+- FishTurn hàm generateFishNormal, generateFishSpecial ko thêm orbit vào biến opts nữa mà truyền orbitLength
+- LobbyHandler lúc chọn bàn freePlay sửa lỗi reqInfo = undefined khi ko có bàn phù hợp
+- Thay đổi hàm sendToUser trong gameController
+- Sửa trong playerFilter đảm bảo gửi request stand_up, leave_room lúc nào cũng được xử lý
+- ItemGenerator hàm genItemWhenFishDead kiểm tra dataItem để tránh undefined
+
+#2016-10-29
+============== Sửa routeUtil.js đoạn routeUtil.room -> Có thể gây lag
+- [Lobby] Sửa lại hàm lobbyHandler.user_statistic lấy tiền theo thông tin hiện giờ của user trong game chứ ko lấy theo database nữa
+- [Database] Thêm trường thông tin 'mode_play' ở bảng user_manager giá trị mặc định là = 0 (Free)
+- [Database] Thêm trường thông tin 'platform_default_full_mode' vào bảng game_config
+- [Database] Thêm trường thông tin 'freeplay_match' vào bảng user_statistics để lưu lại số lần chơi miễn phí của user
+- [Database] Thêm trường thông tin 'hour_active_full_mode' vào bảng game_config
+- [Database] Thêm trường thông tin 'freeplay_valid_open_full_mode' vào bảng game_config
+- [Zone] Tạo thêm lớp loadGameConfigTask.js để chỉ load game_config trong connector
+- [gameConfig] Thêm trường platform_default_full_mode, hour_active_full_mode
+- [gameZone] Thêm đoạn load platform_default_full_mode và hour_active_full_mode vào hàm loadGameConfig
+- [database.js] Thêm hàm getUserByDeviceIdAndRegType lấy danh sách user bởi Device_id và Reg_type
+- [database.js] Thêm hàm addUserStatistic cập nhật thông tin statistics theo bonus
+- [entryHandler] Thêm hàm bonusMoneyCreateUser() để cộng kim cương cho user
+- [freeplayGameController] Thêm đoạn this.database.addUserStatistic(user.getName(), 1, 'freeplay_match') để tăng log số ván chơi freeplay
+- [entryHandler] Thêm hàm checkOpenGameModeRegister để xem danh sách thể loại game user được phép chơi khi đăng ký.
+- [entryHandler] Thêm hàm checkOpenGameModeRegister vào đoạn createUser của LoginQuick và LoginFacebook
+- [entryHandler] Thêm hàm checkOpenGameModeLogin vào tất cả các loginSuccess
+- [lobbyHandler] Thêm đoạn check nếu mode_play = 0 thì gửi về cashout và payment_permission = false
+
+#2016-11-12
+- [fishDeadDecision] Thêm trường thông tin về game_type, nếu là thách đấu thì chỉ tính đến máu mà thôi
+- [fishTurn] Hàm generateFishNormal sinh ra cá, nếu là trong phần chơi thách đấu thì máu = prize_min

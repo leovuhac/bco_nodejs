@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<roomConfig>
+    <room>
+        <name>Machine</name>
+        <game_id>0</game_id>
+        <minMoneyJoinRoom>0</minMoneyJoinRoom>
+        <maxMoneyJoinRoom>0</maxMoneyJoinRoom>
+        <numbers>10</numbers>
+        <minAmountFish>25</minAmountFish>
+        <maxAmountFish>35</maxAmountFish>
+        <winLostRatio>6-4</winLostRatio>
+        <maxPlayer>4</maxPlayer>
+    </room>
+</roomConfig>

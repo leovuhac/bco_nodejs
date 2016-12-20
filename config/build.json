@@ -1,0 +1,38 @@
+{
+	"apk_file" : "C:\\Users\\Master\\Desktop\\RemakeApk\\irik.apk",
+	"new_package_name" : "com.bgate.irik_rebuild",
+	"new_app_name" : "Irik Rebuild",
+	"values_string" : {
+		"active" : false,
+		"file" : "",
+		"specify" :  
+			[
+				{
+					"tag" : "baivip_fb_app_id",
+					"new_value" : "509686482548619"
+				}
+			]
+	},
+	"assets" : {
+		"active" : false,
+		"copy_folder" : true,
+		"new_assets_folder" : "",
+		"specify" :
+			[
+				{
+					"old" : "",
+					"new" : ""
+				}
+			]
+	},
+	"other_files" : {
+		"active" : false,
+		"specify" : 
+			[
+				{
+					"old" : "",
+					"new" : ""
+				}
+			]
+	} 
+}

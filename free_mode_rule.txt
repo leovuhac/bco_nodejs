@@ -1,0 +1,39 @@
+****** CHỨC NĂNG CHẾ ĐỘ CHƠI MIỄN PHÍ ******
+
+1. Các thông tin cấu hình :
+
+- Game có 2 chế độ chơi : Chơi Full và Chơi Miễn phí
+- [Bảng game_config] platform_default_full_mode : Danh sách các nền tảng mặc định được chơi chế độ Full : ["ios", "web", "windowphone","desktop"]
+- [Bảng game_config] hour_active_full_mode : Số giờ chơi để bật chế độ Full : 24h
+- [Bảng game_config] freeplay_valid_open_full_mode : Số ván chơi miễn phí hợp lệ để bật chế độ Full : 3
+- [Bảng user_manager] Thêm trường mode_play với mỗi user : mode_play = 0 là user đó chơi Miễn phí, mode_play = 1 là user đó chơi Full
+- [Bảng user_statistic] Thêm trường freeplay_match lưu lại số ván chơi miễn phí của user
+
+2. Logic xử lý :
+
+- Các user Đăng ký mới ở các nền tảng mặc định được chơi chế độ Full sẽ luôn luôn được chơi chế độ Full
+- Các user Đăng nhập ở các nền tảng mặc định được chơi chế độ Full sẽ luôn luôn được chơi chế độ Full 
+(VD : User chưa đạt điều kiện bật chế độ Full nhưng login trên bản iOS vẫn chơi full chức năng như thường)  
+- Các user có thông tin mode_play = 1 sẽ được chơi chế độ Full
+- Khi User login trên android sẽ check các điều kiện như sau :
++) mode_play của user bằng 1 thì gửi về chế độ chơi Full cho user
++) mode_play của user bằng 0 thì check tiếp các điều kiện sau
+	. Số ván chơi miễn phí của user đã lớn hơn config hay chưa ( >= 3)
+	. Số giờ tồn tại nick trong hệ thống của user đã lớn hơn config hay chưa ( > 24h)
+	. Nếu những điều kiện trên thỏa mãn thì cập nhật mode_play của user về 1 và gửi về thông tin chế độ chơi Full cho user
+- Các thông tin về chế độ chơi của user được gửi ở kết quả login
++) Các chế độ chơi mà user được chơi [Tự do, Thách đấu, Miễn phí]
++) User có được hiện thông tin kim cương trên thanh thông tin user hay không
+- Khi vào Lobby server sẽ kiểm tra thêm điều kiện bật tắt thanh toán : User ở chế độ chơi Full mới bật thanh toán
+- Điều kiện thanh toán của game bây giờ sẽ phụ thuộc vào các điều kiện như sau :
++) Link config (Payment_permission và verify_appstore gửi về trong link config)
++) User login từ IP nước ngoài luôn bị tắt thanh toán (Payment_permission và Cashout_permission gửi về trong LobbyInfo)
++) User có mode_play = 0 cũng bị tắt thanh toán (Payment_permission và Cashout_permission gửi về trong LobbyInfo)
+
+3. Test chức năng :
+
+- Client iOS luôn đầy đủ chế độ chơi (chơi Full) : Nick tạo bởi ios, Nick tạo bởi android login trên ios
+- Client Android nick mới sẽ chỉ có chế độ chơi Miễn phí và ko hiện thông tin kim cương
+- Client Android chơi đủ số ván chơi miễn phí và tồn tại trong server 1 khoảng thời gian nào đấy thì được bật chế độ chơi full, có thanh toán đổi thưởng, hiện thông tin kim cương
+- Nick đã đủ điều kiện kích hoạt chế độ chơi full login đi login lại xem có bị khóa nhầm chức năng nào hay không ?
+- Tặng kim cương lúc đăng ký nick mới
