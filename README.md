@@ -27,4 +27,5 @@ User có 2 đơn vị có thể dùng để chơi game được là *kim cương
  - *Vàng* : User được tặng 100K vàng khi tạo nick. Vàng được sử dụng trong phần chơi Tự do. Vàng không sử dụng trong nạp thẻ và đổi thưởng. User có thể kiếm được vàng khi được user khác nhập code invite.
 
 User có trường thông tin *mode_play* để quy định chế độ chơi mà user được sử dụng *0 - Chỉ chơi chế độ miễn phí, 1 - Chơi tất cả các chế độ*, trường này đặt ra với mục đích qua mặt Google trong quá trình duyệt app. Logic cho phần này có thể tham khảo [tại đây](https://github.com/saruno/bco_nodejs/blob/master/free_mode_rule.txt) 
+
 Khi user login có một thông tin gửi về cho user là *show_user_money_info*, = true là hiển thị thông tin kim cương trong giao diện client, = false là không hiển thị thông tin kim cương trong giao diện client. Tùy theo *mode_play* ở trên mà client gửi về thông tin trường này cho phù hợp.
