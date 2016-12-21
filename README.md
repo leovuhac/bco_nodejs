@@ -29,3 +29,45 @@ User có 2 đơn vị có thể dùng để chơi game được là *kim cương
 User có trường thông tin *mode_play* để quy định chế độ chơi mà user được sử dụng *0 - Chỉ chơi chế độ miễn phí, 1 - Chơi tất cả các chế độ*, trường này đặt ra với mục đích qua mặt Google trong quá trình duyệt app. Logic cho phần này có thể tham khảo [tại đây](https://github.com/saruno/bco_nodejs/blob/master/free_mode_rule.txt) 
 
 Khi user login có một thông tin gửi về cho user là *show_user_money_info*, = true là hiển thị thông tin kim cương trong giao diện client, = false là không hiển thị thông tin kim cương trong giao diện client. Tùy theo *mode_play* ở trên mà client gửi về thông tin trường này cho phù hợp.
+
+#Config
+
+Các dữ liệu config của server game có thể xem tại /app/consts/consts.js, client cũng có thể xem thể tham khảo các thông số. Khi chuyển sang Java thì viết 1 lớp Consts.java có lưu các thông số này
+
+Game không có các file config ngoài, các config được load chủ yếu trong database. VD các table : *game_config*, *card_telco*, *card_exchange_rate*, *fish*, *client_build_manager*, *item*, *quick_room_manager*, ....
+
+![game_config](https://github.com/saruno/bco_nodejs/blob/master/screenshots/game_config.jpg)
+
+Khi client login thành công, join vào Lobby và gửi request user_info, server sẽ chủ động gửi về cho client command *lobby_info* để cung cấp các thông tin config cho client : Danh sách item, Danh sách súng, Danh sách nhà mạng có thể thanh toán, Tỉ giá thanh toán thẻ cào, Bật tắt thanh toán đổi thưởng, Danh sách mức cược ....
+
+Các thông tin cấu hình được lưu trữ trong các bảng với thông tin không biến động nhiều và tương đối nhẹ vì vậy server chủ động auto reload các thông tin config với thời gian khoảng 1-3 phút / 1 lần reload *(Đặc biệt là các thông tin của phòng chơi tự do vì việc chỉnh sửa tỉ lệ thông số sẽ được tool quản trị cập nhật vào database, server phải load lại để cập nhật vào logic game)*
+
+**Link config của client**
+
+Thông tin link config của client load về trước khi kết nối tới server sẽ được viết dưới dạng RESTful Api. Việc tạo link config sẽ diễn ra tự động, các thông tin cấu hình sẽ được lưu trữ trong database *client_build_manager*, người quản trị có thể chỉnh sửa thông tin config dựa vào tool admin.
+
+Link config cho game bắn cá cụ thể như sau :
+
+- HTTP METHOD : GET
+- Base url : http://config.banca69.com:8090/client_config/get
+- Params : build_id, platform, partner, package_name
+
+Ý nghĩa của các params :
+
+- build_id : Id của bản build muốn lấy config. Đặt theo định danh như sau :
+
+               partner + platform + package_name + số thứ tự bản build
+
+> VD : Bản build cho partner : *default*, platform : *android*, package_name : *com.bgate.bca*, bản build này là bản build thứ 9 vậy build_id sẽ là : *default-android-com.bgate.bca-9* . Trong trường hợp database không có build_id thì API sẽ tự tạo một bản ghi mới vào database với các thông tin cấu hình mặc định.
+
+- platform : là nền tảng của file build : android, ios, ...
+- partner : Partner mà bản build được gán
+- package_name (Chính là thông tin edition_id gửi lên lúc user_info) : Với android là packagename gắn trong manifest, ios là bundle_id 
+
+Params có dạng : build_id=....&platform=....&partner=....&package_name=.....
+
+> VD : Một link hoàn chỉnh để lấy config như sau :
+http://config.banca69.com:8090/client_config/get?build_id=default-android-com.banca.doithuong-1&platform=android&partner=default&package_name=com.banca.doithuong
+
+
+
