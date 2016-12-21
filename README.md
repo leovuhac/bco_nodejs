@@ -69,5 +69,46 @@ Params có dạng : build_id=....&platform=....&partner=....&package_name=.....
 > VD : Một link hoàn chỉnh để lấy config như sau :
 http://config.banca69.com:8090/client_config/get?build_id=default-android-com.banca.doithuong-1&platform=android&partner=default&package_name=com.banca.doithuong
 
+#Source structure
+
+Cấu trúc source code của server bắn cá viết bằng nodejs như sau 
+
+![source structure](https://github.com/saruno/bco_nodejs/blob/master/screenshots/Untitled.jpg)
+
+**/app/consts** : Lưu trữ các hằng số được sử dụng trong toàn bộ server : Súng, địa chỉ các file config, ...
+**/app/domain** : Chứa các lớp Quản lý phòng, Quản lý user, Service gửi nhận gói tin, Service xử lý chat
+**/app/lib** : Gồm các package nhỏ hơn như sau :
+
+- *common* : Thanh toán, các hàm thư viện static hay sử dụng trong code, thông tin popup
+- *config* : Chứa tất cả các thông tin config được server load về từ database và lưu trữ lại, gồm có : *eventManager* - Quản lý các sự kiện diễn ra được lưu trữ trong bảng 'event_manager'; *gameConfig* - Quản lý các thông tin config như cá + item + game_config + popups + ....; *roomSetting* - Quản lý các setting của room được load từ file .xml hoặc từ database
+- *constants* : Chứa các hằng số xử dụng trong server như : Các command, các *key* sử dụng trong dữ liệu gửi về 
+- *database* : Các phương thức tương tác với database
+
+**/app/main/entity** :  Các *entity* xử lý logic trong game :
+
+- *bullet* : Đạn. Mỗi viên đạn đều được đánh 1 id duy nhất và thuộc về 1 người chơi duy nhất
+- *fish* : Cá. Mỗi con cá đều được đánh 1 id duy nhất, có 1 quỹ đạo được cấu hình trong file */config/orbit.json*, thuộc 1 loại cá được cấu hình sẵn trong bảng 'fish'
+- *fishConfig* : Cấu hình các loại cá. Cache lại thông tin cấu hình các loại cá từ bảng 'fish'
+- *fishGenerator* : Sinh cá random cho phần chơi miễn phí và tự do. Nguyên tắc sinh cá : Sinh cá theo turn, Một turn có từ 200 -> 300 con cá, Trong 1 turn phải có đủ tất cả các loại cá theo tỉ lệ ít nhiều tùy loại, Cá được phân bố đều trong turn.
+- *fishGeneratorCL* : Sinh cá random cho phần chơi thách đấu. Hạn chế sinh các loại cá to khó bắn chết
+- *fishTurn* : Một turn (hoặc một wave) chứa nhiều con cá. Trong một turn có chứa sẵn 200 - 300 con cá. Bao giờ thả hết cá trong turn thì sinh ra turn mới. Turn có 2 loại : Turn bình thường và Turn đặc biệt (Quỹ đạo ngôi sao, Quỹ đạo hình vuông, ...). 
+- *item* : Thông tin của một item sử dụng trong game. VD : Đóng băng, bom, bẫy tiên cá, ....
+- *itemConfig* : Cấu hình item. Cache lại thông tin cấu hình các item từ bảng 'item'
+- *itemGenerator* : Sinh item khi cá chết. Các ràng buộc : Tỉ lệ xuất hiện item (Item càng mạnh tỉ lệ xuất hiện càng ít), Loại cá chết (Cá càng to chết càng dễ ra item), Các item mà loại cá chết có thể sinh ra (một loại cá khi chết có thể sinh ra 1 số loại item nhất định), item có đang được cấu hình là 'active' hay không.
+
+**/app/main/room** : Các logic trong phòng chơi của các chế độ khác nhau
+**/app/main/zone** : 
+
+- *gameZone* : Load config và khởi tạo phòng chơi khi server khởi động.
+- *....Task* : Thực hiện log và cập nhật định kì các thông số vào database : Load config tự động, Log ccu, ...
+
+**/app/servers** : Bắt và xử lý các request
+
+- *connector/entryHandler* : Xử lý đăng ký, đăng nhập
+- *room/lobbyHandler* : Xử lý các request ở Lobby như : user_info, top đại gia, top săn cá vàng, thanh toán, đổi thưởng, chọn chế độ chơi, đọc tin nhắn, cập nhật thông tin user, ....
+- *room/roomHandler* : Xử lý các request về phòng chơi
+- *room/adminHandler* : Các request về quản trị server. VD : Kick user, Ẩn phòng, Hiện phòng, .....
+
+**/config/fish** : Thông tin quỹ đạo của cá : *orbit.json* - Quỹ đạo tất cả các loại cá, *special_waves.json* - Cấu hình turn cá đặc biệt.
 
 
